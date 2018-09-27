@@ -526,7 +526,7 @@ class Fibonacci:
         self.n += 1
         return val
 
-help(Fibonacci)
+
 
 
 # In[ ]:
@@ -737,16 +737,32 @@ class Fibonacci4:
              self.x, self.nextx = self.nextx, self.x + self.nextx  # Pythonic
              self.n += 1
              return val
-        Fibonacci4.Fibiter.__next__ = next
-        # fbi.__next__ = next  non funzionerebbe
+        #Fibonacci4.Fibiter.__next__ = next
+        fbi.__next__ = next  # non funzionerebbe
         return fbi
 
 
 # In[ ]:
 
 
+F=Fibonacci4(10)
+dir(F)
+
+
+# In[ ]:
+
+
+x=10
+print(type(x))
+x.pippo = 3
+
+
+# In[ ]:
+
+
 F = Fibonacci4(10)
-FI = iter(F)
+FI = F.__iter__()
+F is FI
 
 
 # ### F è un iterabile ma non un iteratore
@@ -845,7 +861,7 @@ X.saldo_disponibile = -1000
 print(X.saldo_disponibile)
 
 
-# ### Attributi che iniziano con il doppio underscore in Python sono detti ***superprivati***. È un termine fuorviante. Sono infatti attributi pubblici, ma il cui accesse è reso "complicato" al solo scopo di evitare errori accidentali. La versione 1.1 usa un tale attributo.
+# ### Attributi che iniziano con il doppio underscore in Python sono detti ***superprivati***. È un termine fuorviante. Sono infatti attributi pubblici, ma il cui accesso è reso "complicato" al solo scopo di evitare errori accidentali. La versione 1.1 usa un tale attributo.
 
 # In[ ]:
 
@@ -878,7 +894,6 @@ class CC:
 # In[ ]:
 
 
-X=CC(100)
 print(X.__saldo_disponibile)
 
 
@@ -924,7 +939,7 @@ X.saldo()
 
 # ## Una soluzione ***pythonic***
 # ### Obiettivi:
-# 1. Inserire almeno controlli per evitare modifiche palesemente errato (tipo versare somme negative) ...
+# 1. Inserire almeno controlli per evitare modifiche palesemente errate (tipo versare somme negative) ...
 # 2. ... ma evitare di dover ricompilare codice client che faccia accesso diretto agli attributi
 
 # In[ ]:
@@ -972,6 +987,12 @@ class CC:
 
 
 X=CC(100)
+
+
+# In[ ]:
+
+
+X.saldo_disponibile
 
 
 # In[ ]:
