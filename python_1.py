@@ -2,15 +2,16 @@
 # coding: utf-8
 
 # # Obiettivi del modulo Python (6 CFU)
-# ## Python ... pitonico
-# ## Strutture dati e data management
-# ## Implementazione di algoritmi non banali
+# ## Python ... pythonic
 # ## Salto di qualità negli skill di programmazione
-# ## Abilità progettuale
+# ## Capacità progettuali
+# ## Implementazione di algoritmi non banali
+# ## Strutture dati e data management
+# ## -----------------------------------------------------------------------------------------
 # ## Materiale disponibile su: 
 # ##     https://github.com/Linguaggi-Dinamici-2018-Modulo-Python/
 
-# # Quale Python? Quale ambiente di lavoro?
+# # Quale Python e quale ambiente di lavoro?
 # 
 # 1. Useremo Python 3, naturalmente in ambiente Linux
 # 2. Ma potremo "far girare" i nostri programmi (script) in molti modi diversi, "secondo i gusti"
@@ -61,8 +62,9 @@ if __name__=='__main__':
 from random import random
 i = 0
 while i<10:
-    print(1+int(random()*10))
-    i = i+1
+ print(1+int(random()*10))
+ i = i+1
+print(i)    
 
 
 # ## Come script completo
@@ -70,6 +72,7 @@ while i<10:
 # In[ ]:
 
 
+#!/usr/bin/env python3
 
 
 if __name__=='__main__':
@@ -184,6 +187,7 @@ while i<R.stop:
 
 L = ['assert','pass','with','continue','break','yield']
 iterator = iter(L)
+L.append('dummy')
 while True:
     try:
         simple_statement = next(iterator)
@@ -228,7 +232,7 @@ def eqn1solve(a,b):
     """Solve equation a*x+b=0"""
     if (a==0 and b==1):
         print("Eqn impossible")
-    elif (a==0 and b==0):
+    elif (a==0):
         print("Identity 0=0")
     elif (b==0):
         print("Solution x=0")
@@ -243,20 +247,19 @@ eqn1solve(2,1)
 # In[ ]:
 
 
-class OutOfLimit(Exception):
+class OutOfBound(Exception):
     pass
 
-v=0
 while True:
     try:
         v = input("Scegli un numero intero fra 1 e 10: ")
         n = int(v)
         if (n<1 or n>10):
-            raise OutOfLimit
+            raise OutOfBound
         break
     except ValueError:
         print("Letterale non riconosciuto come numero intero! Riprovare ...")
-    except OutOfLimit:
+    except OutOfBound:
         print("Il numero non è compreso nell'intervallo desiderato! Riprovare ...")
 
 print("Hai scelto il numero {}".format(v))
@@ -290,12 +293,25 @@ print(type(complex(1,-2)))
 print(type(range(0,10,3)))
 def f1(x):
     return x+1
+
 exec("""def f2(x):
     y = x+1
     return y""")
+
 f3 = f2
 print("s1: {0}\ns2: {1}\ns3: {2}".format(type(f1),type(f2),type(f3)))
+
 print(type(lambda x: x+1))
+
+print(f2(2))
+
+def f4(x):
+    def f2(x):
+        return 2*x
+    return f2(x)
+
+print(f4(4))
+print(f2(4))
 
 
 # ### In python il tipo è associato all'oggetto, non alla variabile (nome), che non deve essere dichiarata
@@ -359,14 +375,24 @@ class counter:
     def inc():
         '''Increment the counter'''
         val += 1
-        
+
 print(counter.val)
 print(counter.inc.__doc__)
+print(counter.__doc__)
+counter.val = 5
+print(counter.val)
 
 
 # In[ ]:
 
 
+print(counter.getval())  # Produce (volutamente) errore
+
+
+# In[ ]:
+
+
+val = 34
 print(counter.getval())
 
 
@@ -378,7 +404,7 @@ class counter:
     val = 0
     def getval():
         '''Return the value of the counter'''
-        return counter.val
+        return r.val
     def inc():
         '''Increment the counter'''
         counter.val += 1
@@ -397,13 +423,13 @@ c = counter()
 
 
 print(c.val)
-print(c.getval())
+print(c.getval())  # Produce (volutamente) errore
 
 
 # In[ ]:
 
 
-c.inc()
+c.inc()  # Produce (volutamente) errore
 
 
 # In[ ]:
@@ -456,9 +482,9 @@ class counter:
     def inc(self):
         '''Increment the counter'''
         self.val += 1
-    def reset(self):
+    def reset(self,start=0):
         '''Set the counter value back to 0'''
-        self.val = 0
+        self.val = start
 
 
 # In[ ]:
@@ -473,6 +499,8 @@ print(c2.getval())
 print(c.getval())
 
 
+# ## Un approfondimento su ***iterabili*** e ***iteratori***
+
 # In[ ]:
 
 
@@ -483,9 +511,10 @@ class Fibonacci:
         self.last = last
 
     def __iter__(self):
-        self.x = 0
-        self.nextx = 1
-        self.n = 1
+        '''Initialize Fibonacci recurrence'''
+        self.x = 0         # F_0
+        self.nextx = 1     # F_1
+        self.n = 1         # n=1
         return self
 
     def __next__(self):
@@ -496,26 +525,261 @@ class Fibonacci:
         self.x, self.nextx = self.nextx, self.x + self.nextx  # Pythonic
         self.n += 1
         return val
-    
+
 help(Fibonacci)
 
-
-# ### Fibonacci è un ***iterabile*** perché implementa i metodi \__iter\__ e \__next\__
 
 # In[ ]:
 
 
-F=iter(Fibonacci(10))
+F = Fibonacci(10)
+
+
+# ### F è un ***iterabile*** perché implementa il metodo \__iter\__
+
+# In[ ]:
+
+
+FI = iter(F)
+
+
+# ### FI è un ***iteratore*** perché implementa il metodo \__next\__
+
+# In[ ]:
+
+
+for i in range(10):
+    print(next(FI))
+
+
+# ### Si noti che le funzioni ***iter*** e ***next*** sono "zucchero sintattico" rispetto alla chiamata esplicita dei corrispondenti metodi
+
+# In[ ]:
+
+
+FI = Fibonacci.__iter__(F)
+for i in range(10):
+    print(Fibonacci.__next__(FI))
+
+
+# In[ ]:
+
+
+# Il costrutto for rende tutto ancora più trasparente:
+for f in Fibonacci(10):
+    print(f)
+
+
+# ### Qualcuno ha notato che "F is FI"?
+
+# In[ ]:
+
+
+F is FI
+
+
+# ### Però attenzione ...
+
+# In[ ]:
+
+
+F = Fibonacci(10)
 for i in range(10):
     print(next(F))
 
 
+# ### È vero che la classe Fibonacci implementa entrambi i metodi \__iter\__ e \__next\__, ma \__next\__ funziona solo dopo che è stato chiamato \__iter\__, perché quest'ultimo inizializza propriamente la ricorrenza
+
+# ### Viene allora spontanea la domanda: non possiamo spostare le funzionalità di \__iter\__ in \__init\__? In questo modo \__next\__ funzionerebbe subito, evitando così la chiamata di \__iter\__. È quel che fa la classe ***Fibonacci2***
+
 # In[ ]:
 
 
-# Pythonic
-for n in Fibonacci(10):
-    print(n)
+class Fibonacci2:
+    '''Iterarable for the Fibonacci numbers that coincides with an iterator'''
+
+    def __init__(self, last):
+        self.last = last
+        self.x = 0         # F_0
+        self.nextx = 1     # F_1
+        self.n = 1         # n=1
+
+    def __next__(self):
+        '''Fibonacci-specific cursor method'''
+        val = self.x
+        if self.n > self.last:
+            raise StopIteration
+        self.x, self.nextx = self.nextx, self.x + self.nextx  # Pythonic
+        self.n += 1
+        return val
+
+
+# In[ ]:
+
+
+F = Fibonacci2(10)
+for i in range(10):
+    print(next(F))
+
+
+# ### Sembra funzionare perfettamente e abbiamo saltato un passaggio. Ma...
+
+# In[ ]:
+
+
+for f in Fibonacci2(10):
+    print(f)
+
+
+# ### Fibonacci2 non è un iterabile perché non implementa \__iter\__ e dunque il costrutto ***for*** (che si applica ad iterabili) produce errore.
+
+# ### Basta un semplice aggiustamento, ma la soluzione che si delinea è un po' meno "pulita". Perché?
+
+# In[ ]:
+
+
+class Fibonacci2:
+    '''Iterarable for the Fibonacci numbers that coincides with an iterator'''
+
+    def __init__(self, last):
+        self.last = last
+        self.x = 0         # F_0
+        self.nextx = 1     # F_1
+        self.n = 1         # n=1
+        
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        '''Fibonacci-specific cursor method'''
+        val = self.x
+        if self.n > self.last:
+            raise StopIteration
+        self.x, self.nextx = self.nextx, self.x + self.nextx  # Pythonic
+        self.n += 1
+        return val
+
+
+# In[ ]:
+
+
+for f in Fibonacci2(10):
+    print(f)
+
+
+# ### Una soluzione ancora diversa, a scopo illustrativo. 
+
+# In[ ]:
+
+
+class Fibonacci3:
+    '''Iterarable for the Fibonacci numbers that pre-computes the whole series'''
+
+    def __init__(self, last):
+        self.last = max(2,last)
+
+    def __iter__(self):
+        self.seq = [0,1]
+        self.n = 0
+        for i in range(2,self.last):
+            self.seq.append(self.seq[-2]+self.seq[-1])
+        return self
+
+    def __next__(self):
+        '''Fibonacci-specific cursor method'''
+        if self.n==self.last:
+            raise StopIteration
+        val = self.seq[self.n]
+        self.n += 1
+        return val
+
+
+# In[ ]:
+
+
+F = Fibonacci3(10)
+FI = iter(F)
+print(FI.seq)
+
+
+# In[ ]:
+
+
+for i in range(10):
+    print(next(FI))
+
+
+# ### Un'ultima proposta: iterabile ed iteratore come oggetti di tipo diverso
+
+# In[ ]:
+
+
+class Fibonacci4:
+    '''Iterarable that dynamically "construct" an iterator 
+       object for the Fibonacci numbers'''
+    class Fibiter:
+        pass
+    
+    def __init__(self, last):
+        self.last = last
+
+    def __iter__(self):
+        fbi = Fibonacci4.Fibiter()
+        fbi.x = 0
+        fbi.nextx = 1
+        fbi.n = 1
+        fbi.last = self.last
+        def next(self):
+             '''Fibonacci-specific cursor method'''
+             val = self.x
+             if self.n > self.last:
+                raise StopIteration
+             self.x, self.nextx = self.nextx, self.x + self.nextx  # Pythonic
+             self.n += 1
+             return val
+        Fibonacci4.Fibiter.__next__ = next
+        # fbi.__next__ = next  non funzionerebbe
+        return fbi
+
+
+# In[ ]:
+
+
+F = Fibonacci4(10)
+FI = iter(F)
+
+
+# ### F è un iterabile ma non un iteratore
+
+# In[ ]:
+
+
+next(F)
+
+
+# In[ ]:
+
+
+print(type(F))
+print(type(FI))
+
+
+# ### L'iteratore è ovviamente FI
+
+# In[ ]:
+
+
+for i in range(10):
+    print(next(FI))
+
+
+# ### Il costrutto ***for*** "trova tutto a posto"
+
+# In[ ]:
+
+
+for f in Fibonacci4(10):
+    print(f)
 
 
 # ## Information hiding?
@@ -536,7 +800,7 @@ class CC:
         self.saldo_disponibile += importo
         self.saldo()
         
-    def prelevamento(self, importo):
+    def prelievo(self, importo):
         self.saldo_disponibile -= importo
         self.saldo()
         
@@ -544,16 +808,33 @@ class CC:
         print("La disponibilità è di {} Euro".format(self.saldo_disponibile))
 
 
+# ### La classe ci permette di aprire conti ed eseguire le operazione base di versamento, prelevamento e richiesta del saldo
+
 # In[ ]:
 
 
 X=CC(100)
+
+
+# In[ ]:
+
+
 X.versamento(50)
-X.prelevamento(80)
+
+
+# In[ ]:
+
+
+X.prelievo(30)
+
+
+# In[ ]:
+
+
 X.saldo()
 
 
-# ### In Python gli attributi di un oggetto sono però sempre direttamente accessibili
+# ### In Python gli attributi di un oggetto sono però direttamente accessibili
 
 # In[ ]:
 
@@ -563,6 +844,8 @@ print(X.saldo_disponibile)
 X.saldo_disponibile = -1000
 print(X.saldo_disponibile)
 
+
+# ### Attributi che iniziano con il doppio underscore in Python sono detti ***superprivati***. È un termine fuorviante. Sono infatti attributi pubblici, ma il cui accesse è reso "complicato" al solo scopo di evitare errori accidentali. La versione 1.1 usa un tale attributo.
 
 # In[ ]:
 
@@ -581,8 +864,8 @@ class CC:
         self.__saldo_disponibile += importo
         self.saldo()
         
-    def prelevamento(self, importo):
-        print("Prelevamento di {} Euro".format(importo))
+    def prelievo(self, importo):
+        print("Prelievo di {} Euro".format(importo))
         self.__saldo_disponibile -= importo
         self.saldo()
         
@@ -590,7 +873,7 @@ class CC:
         print("La disponibilità è di {} Euro".format(self.__saldo_disponibile))
 
 
-# ### Attributi come __saldo_disponibile sono detti ***superprivati***
+# ### Un accesso diretto all'attributo provoca errore
 
 # In[ ]:
 
@@ -598,24 +881,35 @@ class CC:
 X=CC(100)
 print(X.__saldo_disponibile)
 
+
+# ### mentre, chiaramente, l'accesso con i "metodi" della classe è OK
 
 # In[ ]:
 
 
 X=CC(100)
 X.versamento(50)
-X.prelevamento(50)
+X.prelievo(50)
 
+
+# ### Attenzione poi a non confondersi. L'attributo superprivato, non facilmente accessibile in lettura, non è neppure facilmente accessibile in scrittura, come sembrerebbe invece dal fatto che il seguente comando non provoca errore
 
 # In[ ]:
 
 
 X.__saldo_disponibile = -1000
+
+
+# ### Il comando semplicemente introduce un nuovo attributo per il solo oggetto X (e non per tutta la classe), attributo che non coincide con quello superprivato definito in CC
+
+# In[ ]:
+
+
 print(X.__saldo_disponibile)
 X.saldo()
 
 
-# ### Python usa il lo schema cosiddetto del ***name mangling*** per cambiare il nome di un attributo in modo da evitare riferimenti "accidentali"
+# ### Python usa il lo schema cosiddetto del ***name mangling*** per cambiare il nome di un attributo superprivato in modo da evitare riferimenti "accidentali"
 
 # In[ ]:
 
@@ -625,9 +919,12 @@ print(X._CC__saldo_disponibile)
 X.saldo()
 
 
+# ### Non abbiamo dunque effettuato un vero incapsulamento dei dati.
+# ### Qualcosa si può comunque fare, restando nella prospettiva "aperta" di Python
+
 # ## Una soluzione ***pythonic***
 # ### Obiettivi:
-# 1. Inserire controlli sulla saldo e sugli importi versati...
+# 1. Inserire almeno controlli per evitare modifiche palesemente errato (tipo versare somme negative) ...
 # 2. ... ma evitare di dover ricompilare codice client che faccia accesso diretto agli attributi
 
 # In[ ]:
@@ -655,30 +952,54 @@ class CC:
             self.__saldo_disponibile += importo
         self.saldo()
         
-    def prelevamento(self, importo=0):
+    def prelievo(self, importo=0):
         if importo<0:
             raise ValueError("Non si può prelevare una somma negativa")
         elif importo>0 and self.__saldo_disponibile-importo<0:
             raise ValueError("Operazione bloccata: il conto andrebbe in rosso")
         elif importo>0:
-            print("Prelevamento di {} Euro".format(importo))
+            print("Prelievo di {} Euro".format(importo))
             self.__saldo_disponibile -= importo
         self.saldo()
                 
     def saldo(self):
         print("La disponibilità è di {} Euro".format(self.__saldo_disponibile))
     
-    saldo_disponibile=property(prelevamento,valorediretto) # Pythonic
+    saldo_disponibile=property(prelievo,valorediretto) # Pythonic
 
 
 # In[ ]:
 
 
 X=CC(100)
+
+
+# In[ ]:
+
+
 X.versamento(200)
-X.prelevamento(120)
+
+
+# In[ ]:
+
+
+X.prelievo(10)
+
+
+# In[ ]:
+
+
 X.saldo()
+
+
+# In[ ]:
+
+
 X.saldo_disponibile = 50
-X.saldo()
+
+
+# In[ ]:
+
+
 X.saldo_disponibile = -50
 
