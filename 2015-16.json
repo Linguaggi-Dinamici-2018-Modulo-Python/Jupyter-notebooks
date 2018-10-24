@@ -5578,21 +5578,6 @@
           },
           "score1": 1,
           "score2": 5
-        },
-        {
-          "date": "2016-05-01",
-          "team1": {
-            "key": "hellasverona",
-            "name": "Verona",
-            "code": "HEL"
-          },
-          "team2": {
-            "key": "frosinone",
-            "name": "Frosinone",
-            "code": null
-          },
-          "score1": null,
-          "score2": null
         }
       ]
     },
@@ -5748,21 +5733,6 @@
           },
           "score1": 1,
           "score2": 1
-        },
-        {
-          "date": "2016-05-08",
-          "team1": {
-            "key": "palermo",
-            "name": "Palermo",
-            "code": "PAL"
-          },
-          "team2": {
-            "key": "carpi",
-            "name": "Carpi",
-            "code": null
-          },
-          "score1": null,
-          "score2": null
         }
       ]
     },
@@ -5918,21 +5888,6 @@
           },
           "score1": 2,
           "score2": 1
-        },
-        {
-          "date": "2016-05-15",
-          "team1": {
-            "key": "carpi",
-            "name": "Carpi",
-            "code": null
-          },
-          "team2": {
-            "key": "frosinone",
-            "name": "Frosinone",
-            "code": null
-          },
-          "score1": null,
-          "score2": null
         }
       ]
     }
