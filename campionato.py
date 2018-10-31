@@ -7,7 +7,7 @@ Created on Wed Oct 24 14:35:48 2018
 """
 import pymysql
 import json
-import pdb
+from functools import reduce
 
 class campionato:
     
@@ -131,10 +131,19 @@ class campionato:
         query di risposta alle interrogazioni utente e per generare
         automaticamente la classifica.
         '''
-        from functools import reduce
         with open(nome) as f:
             nuovocamp = json.load(f)
         self.__nomecamp = nuovocamp['name']
+        # Controlliamo comunque che il campionato non sia già stato inserito
+        query = "SELECT id FROM Campionati WHERE nome=%s;"
+        retcode, result = self.__selOneQuery(query, self.__nomecamp)
+        if retcode != campionato.QUERY_OK:
+            return retcode
+        if result:
+            self.squadre
+            return self.__init__(self.__nomecamp)
+            
+        # Il campionato non esiste e va inserito
         query = "INSERT INTO Campionati (nome) VALUES (%s);"
         retcode = self.__insQuery(query, self.__nomecamp)
         if retcode != campionato.QUERY_OK:
@@ -159,8 +168,6 @@ class campionato:
         self.__idSquadre = ids
    
         # Inserimento delle partite in calendario e dei risultati
-        calendario = []
-        risultati = []
         numsquadre = len(self.__squadre)
         durata = numsquadre-1
         query = "INSERT INTO Calendario " + \
@@ -325,8 +332,8 @@ class campionato:
                     "WHERE Campionati.nome=%s;"
             retcode, results = self.__selQuery(query,self.nome)
             if retcode == campionato.QUERY_OK:
-                self.__squadre = results[0]
-                return results[0]
+                self.__squadre = reduce(lambda x,y: x+y, results)
+                return self.__squadre
         else:
             print("La classe campionato non ha attributo "+name)
             return
